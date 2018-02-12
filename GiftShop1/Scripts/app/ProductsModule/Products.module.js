@@ -94,7 +94,7 @@ angular.module('products', [])
         $http.get(`/api/products/`).then((res) => { //Success
             console.log("Detalles de producto recibido",res)
             var products = res.data
-            $scope.selectedProducts = $scope.selectedProducts.map(item=>{
+            $scope.selectedProducts = $scope.selectedProducts.filter(item=>{return item.qty>0}).map(item=>{
                 var itemFound = products.find(item2=>{return item2.productID == item.prodID })
                 if(itemFound)
                 {
