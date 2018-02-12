@@ -15,7 +15,7 @@ namespace GiftShop1
                     "~/Scripts/angular-route.min.js")
                 .Include(
                     "~/Scripts/app/app.module.js", //Main angular module
-                    "~/Scripts/app/app.config.min.js") //Angular Configuration 
+                    "~/Scripts/app/app.config.js") //Angular Configuration 
                 .IncludeDirectory("~/Scripts/app", "*module.js", true)); //Modules loaded
 
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(

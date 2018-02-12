@@ -7,3 +7,12 @@ angular.module('app', [
     //Internal
     'products',
 ])
+.config(function($locationProvider, $routeProvider){
+    $routeProvider.
+    when("/",{
+        template:"<products-list></products-list>"
+    }).
+    when("/cart/",{
+        template:"<h1>Cart Screen</h1>"
+    })
+})

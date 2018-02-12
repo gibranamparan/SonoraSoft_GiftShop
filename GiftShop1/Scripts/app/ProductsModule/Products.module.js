@@ -1,7 +1,17 @@
 angular.module('products', [])
 .component("productsList", {
     templateUrl: "Scripts/app/ProductsModule/ProductsList.template.html",
-    controller: function ($scope, $http, $uibModal) {
+    controller: function ($scope, $http, $uibModal, $window) {
+        $scope.selectedProducts = []
+        //Recovering state of selected products by the user
+        if($window.sessionStorage.selectedProducts){
+            $scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
+            console.log($scope.selectedProducts)
+        }
+        $scope.totalQty = $scope.selectedProducts.map(item=>{return item.qty}).reduce((itemA,itemB)=>{ 
+            return itemA + itemB
+        },0)
+
         //Open Modal To see product details
         $scope.openModalProductDetails = function(prodID){
             //Selected product ID is received and passed to modal
@@ -18,13 +28,27 @@ angular.module('products', [])
                 }
               });
               modalInstance.result.then(
-                res=>{ //Clicked a button
-                    console.log("Se clickeo boton con opcion:",res)
+                res=>{ //Clicked "Add to Cart" button in modal
+                    if($scope.selectedProducts){
+                        prodFound = $scope.selectedProducts.find(item=>item.prodID == res.prodID)
+                        if(prodFound){
+                            prodFound.qty = res.qty //Update qty for selected product
+                        }else{
+                            $scope.selectedProducts.push(res) //Add new selected product
+                        }
+                        $scope.totalQty = $scope.selectedProducts.map(item=>{return item.qty}).reduce((itemA,itemB)=>{ 
+                            return itemA + itemB
+                        },0)
+                    }
+                    
+                    console.log($scope.selectedProducts)
+                    $window.sessionStorage.selectedProducts = JSON.stringify($scope.selectedProducts)
                 },
                 res=>{ //Clicked out of the modal
                     console.log("Modal closed")
                 },
         )}
+        
         //Getting the list of all products
         $http.get('/api/products').then((res) => { //Success
             var products = res.data.map((item,idx)=> {
@@ -62,7 +86,7 @@ angular.module('products', [])
     $ctrl.qty = 0
 
     $ctrl.ok = function () {
-        $uibModalInstance.close($ctrl.qty);
+        $uibModalInstance.close({prodID : prodID, qty:$ctrl.qty});
     };
 
     $ctrl.cancel = function () {

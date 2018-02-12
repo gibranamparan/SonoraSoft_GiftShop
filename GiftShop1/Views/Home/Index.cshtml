@@ -1,6 +1,8 @@
 ﻿@using GiftShop1.Models
 @{ 
+    ViewBag.Title = "GiftShop";
     Product productoModel = new Product();
 }
 
-<products-list></products-list>
+@*Main Angular Screen Render Container*@
+<div ng-view></div>
