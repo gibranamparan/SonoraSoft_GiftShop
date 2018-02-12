@@ -1,0 +1,47 @@
+﻿<div>
+    <h1 class="pull-left">
+        Our Gifts
+    </h1>
+    <div class="pull-right">
+        <a href="#" style="font-size: 2.5em">
+            <i class="fa fa-shopping-cart"></i>
+            <span id="totalQty">5</span>
+        </a>
+    </div>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Product</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="prod in products">
+                <td class="actions">
+                    <a href="#">
+                        <i class="fa fa-cart-plus" ng-click="openModalProductDetails(prod.productID)"></i>
+                    </a>
+                </td>
+                <td>{{prod.name}}</td>
+                <td>${{prod.price | number:2}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal to show selected product details -->
+<script type="text/ng-template" id="modalsProductDetails.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Do you to add it to your cart?</h3>
+        <span>Qty: {{$ctrl.qty}}</span>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <product-details prodID="$ctrl.prodID" qty="$ctrl.qty"></product-details>
+    </div>
+    <div class="modal-footer" id="modal-footer">
+        <button type="button" class="btn btn-defualt" ng-click="$ctrl.cancel()">Cancel</button>
+        <button type="button" class="btn btn-success" ng-click="$ctrl.ok()">Add To Cart</button>
+    </div>
+</script>
+

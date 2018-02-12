@@ -9,9 +9,18 @@
     padding-right: 15px;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+a i{
+    transition: color .3s;
+}
+
+a i.fa{
+    font-size : 1.5em
+}
+
+a i:hover{
+    color: #6ad500
+}
+
+td.actions{
+    width: 3em
 }

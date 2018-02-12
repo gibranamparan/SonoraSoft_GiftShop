@@ -23,13 +23,14 @@ namespace GiftShop1.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data. E.g.
             //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            context.Categories.AddOrUpdate(
+              new Category { name = "Collares" },
+              new Category { name = "Pulseras" },
+              new Category { name = "Libros y Revistas" },
+              new Category { name = "Posters" },
+              new Category { name = "Figuras" }
+            );
+
             //Se crean los roles que se manejaran en el sistema inicialmente
             string[] roles = ApplicationUser.RoleNames.ROLES_ARRAY;
             foreach (string rol in roles)

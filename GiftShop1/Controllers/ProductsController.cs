@@ -17,10 +17,12 @@ namespace GiftShop1.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Products
+        //public IEnumerable<Product.VMProduct> GetProducts()
         public IEnumerable<Product.VMProduct> GetProducts()
         {
-            return from prod in db.Products.ToList()
-                   select new Product.VMProduct(prod);
+            var products = from prod in db.Products.ToList()
+                            select new Product.VMProduct(prod);
+            return products;
         }
 
         // GET: api/Products/5
@@ -33,7 +35,7 @@ namespace GiftShop1.Controllers
                 return NotFound();
             }
 
-            return Ok(product);
+            return Ok(new Product.VMProduct(product));
         }
 
         // PUT: api/Products/5

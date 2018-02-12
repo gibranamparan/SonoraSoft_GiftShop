@@ -65,5 +65,7 @@ namespace GiftShop1.Models
         public System.Data.Entity.DbSet<GiftShop1.Models.PurchaseCart> Purchases { get; set; }
 
         public System.Data.Entity.DbSet<GiftShop1.Models.Buyer> ApplicationUsers { get; set; }
+
+        public System.Data.Entity.DbSet<GiftShop1.Models.Category> Categories { get; set; }
     }
 }

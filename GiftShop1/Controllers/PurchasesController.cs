@@ -75,9 +75,8 @@ namespace GiftShop1.Controllers
         public IHttpActionResult PostPurchases(PurchaseCart purchase)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
+            
             purchase.createdAt = DateTime.Now;
             db.Purchases.Add(purchase);
             db.SaveChanges();
