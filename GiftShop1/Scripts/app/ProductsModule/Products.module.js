@@ -79,6 +79,25 @@ angular.module('products', [])
         (res, stats, conf, txt) => { console.log(res) })
     }
 })
+.component("cart", {
+    templateUrl: "Scripts/app/ProductsModule/Cart.template.html",
+    bindings:{
+        prodID: '@',
+        qty:'='
+    },
+    controller: function ($scope, $http) {
+        $scope.prodID = $ctrl.prodID
+        $scope.product = {}
+        console.log("Entro product details con ID",$ctrl.prodID)
+
+        //Getting the list of all products
+        $http.get(`/api/products/${$ctrl.prodID}`).then((res) => { //Success
+            console.log("Detalles de producto recibido",res)
+            $scope.product = res.data
+        },//Error
+        (res, stats, conf, txt) => { console.log(res) })
+    }
+})
 //Modal product details controller
 .controller("ModalProductDetailsCtrl",function ($uibModalInstance,prodID) {
     $ctrl = this

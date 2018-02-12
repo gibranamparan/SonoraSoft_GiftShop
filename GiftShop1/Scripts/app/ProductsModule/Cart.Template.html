@@ -1,0 +1,17 @@
+<h1>Your Cart</h1>
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>Qty</th>
+            <th>Product</th>
+            <th style="width:8em">Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="prod in products">
+            <td>{{prod.qty}}</td>
+            <td>{{prod.name}}</td>
+            <td>${{prod.price | number:2}}</td>
+        </tr>
+    </tbody>
+</table>
