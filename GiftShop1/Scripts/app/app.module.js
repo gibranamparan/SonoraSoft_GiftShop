@@ -13,6 +13,6 @@ angular.module('app', [
         template:"<products-list></products-list>"
     }).
     when("/cart/",{
-        template:"<h1>Cart Screen</h1>"
+        template:"<cart-summary></cart-summary>"
     })
 })

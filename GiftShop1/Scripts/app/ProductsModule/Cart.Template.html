@@ -1,17 +1,29 @@
 <h1>Your Cart</h1>
+
 <table class="table table-hover table-striped">
     <thead>
         <tr>
             <th>Qty</th>
             <th>Product</th>
-            <th style="width:8em">Price</th>
+            <th style="width:8em">Unit Price</th>
+            <th style="width:8em">Amount</th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="prod in products">
+        <tr ng-repeat="prod in selectedProducts">
             <td>{{prod.qty}}</td>
-            <td>{{prod.name}}</td>
+            <td>
+                <strong>{{prod.name}}. </strong>
+                <p>{{prod.description}}</p>
+            </td>
             <td>${{prod.price | number:2}}</td>
+            <td>${{prod.totalAmount | number:2}}</td>
         </tr>
     </tbody>
 </table>
+<div class="row">
+    <div class="pull-right">
+        <strong>Total: </strong>
+        <span>${{TotalAmount | number:2}}</span>
+    </div>
+</div>

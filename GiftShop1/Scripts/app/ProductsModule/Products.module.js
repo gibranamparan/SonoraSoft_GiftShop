@@ -79,21 +79,36 @@ angular.module('products', [])
         (res, stats, conf, txt) => { console.log(res) })
     }
 })
-.component("cart", {
+.component("cartSummary", {
     templateUrl: "Scripts/app/ProductsModule/Cart.template.html",
-    bindings:{
-        prodID: '@',
-        qty:'='
-    },
-    controller: function ($scope, $http) {
-        $scope.prodID = $ctrl.prodID
-        $scope.product = {}
-        console.log("Entro product details con ID",$ctrl.prodID)
+    controller: function ($scope, $http, $uibModal, $window) {
+        $scope.selectedProducts = []
+        $scope.TotalAmount = 0
+        //Recovering state of selected products by the user
+        if($window.sessionStorage.selectedProducts){
+            $scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
+            console.log($scope.selectedProducts)
+        }
 
         //Getting the list of all products
-        $http.get(`/api/products/${$ctrl.prodID}`).then((res) => { //Success
+        $http.get(`/api/products/`).then((res) => { //Success
             console.log("Detalles de producto recibido",res)
-            $scope.product = res.data
+            var products = res.data
+            $scope.selectedProducts = $scope.selectedProducts.map(item=>{
+                var itemFound = products.find(item2=>{return item2.productID == item.prodID })
+                if(itemFound)
+                {
+                    item.price = itemFound.price
+                    item.description = itemFound.description
+                    item.totalAmount = item.qty * item.price
+                    item.name = itemFound.name
+                }
+                return item;
+            })
+            $scope.TotalAmount = $scope.selectedProducts.map(item=>{return item.totalAmount}).reduce((itemA,itemB)=>{ 
+                return itemA + itemB
+            },0)
+            console.log($scope.selectedProducts)
         },//Error
         (res, stats, conf, txt) => { console.log(res) })
     }
