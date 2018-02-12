@@ -1,11 +1,13 @@
 angular.module('products', [])
 .component("productsList", {
     templateUrl: "Scripts/app/ProductsModule/ProductsList.template.html",
-    controller: function ($scope, $http, $uibModal, $window) {
+    controller: function ($scope, $http, $uibModal, localStorageService) {
         $scope.selectedProducts = []
         //Recovering state of selected products by the user
-        if($window.sessionStorage.selectedProducts){
-            $scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
+        //if($window.sessionStorage.selectedProducts){
+        if(localStorageService.get('selectedProducts')){
+            //$scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
+            $scope.selectedProducts = localStorageService.get('selectedProducts')
             console.log($scope.selectedProducts)
         }
         $scope.totalQty = $scope.selectedProducts.map(item=>{return item.qty}).reduce((itemA,itemB)=>{ 
@@ -42,7 +44,8 @@ angular.module('products', [])
                     }
                     
                     console.log($scope.selectedProducts)
-                    $window.sessionStorage.selectedProducts = JSON.stringify($scope.selectedProducts)
+                    //$window.sessionStorage.selectedProducts = JSON.stringify($scope.selectedProducts)
+                    localStorageService.set('selectedProducts',$scope.selectedProducts)
                 },
                 res=>{ //Clicked out of the modal
                     console.log("Modal closed")
@@ -81,12 +84,13 @@ angular.module('products', [])
 })
 .component("cartSummary", {
     templateUrl: "Scripts/app/ProductsModule/Cart.template.html",
-    controller: function ($scope, $http, $uibModal, $window) {
+    controller: function ($scope, $http, $uibModal, $window, localStorageService) {
         $scope.selectedProducts = []
         $scope.TotalAmount = 0
         //Recovering state of selected products by the user
-        if($window.sessionStorage.selectedProducts){
-            $scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
+        if(localStorageService.get('selectedProducts')){
+            //$scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
+            $scope.selectedProducts = localStorageService.get('selectedProducts')
             console.log($scope.selectedProducts)
         }
 

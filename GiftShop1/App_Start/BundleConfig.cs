@@ -11,11 +11,11 @@ namespace GiftShop1
             bundles.Add(new ScriptBundle("~/bundles/angular")
                 .Include(
                     "~/Scripts/angular.min.js",
+                    "~/node_modules/angular-local-storage/dist/angular-local-storage.min.js",
                     "~/Scripts/ui-bootstrap-tpls-2.5.0.min.js",
-                    "~/Scripts/angular-route.min.js")
-                .Include(
-                    "~/Scripts/app/app.module.js", //Main angular module
-                    "~/Scripts/app/app.config.js") //Angular Configuration 
+                    "~/Scripts/angular-route.min.js",
+                    "~/Scripts/app/app.module.js") //Main angular module
+                .IncludeDirectory("~/Scripts/app", "*service.js", true) //Modules loaded
                 .IncludeDirectory("~/Scripts/app", "*module.js", true)); //Modules loaded
 
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
