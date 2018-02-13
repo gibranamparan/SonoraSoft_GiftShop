@@ -1,15 +1,17 @@
 ﻿'use strict'
-angular.module('app', [
+var app = angular.module('app', [
     //External
-    'ngRoute',
-    'ui.bootstrap',
     'LocalStorageModule',
+    'ngRoute',
+    'smart-table',
+    'ui.bootstrap',
 
     //Internal
     'users',
     'products',
 ])
-.config(function($locationProvider, $routeProvider, localStorageServiceProvider){
+
+app.config(function($locationProvider, $routeProvider, localStorageServiceProvider){
     //Angular Router Config
     $routeProvider.
     when("/",{
@@ -24,5 +26,7 @@ angular.module('app', [
 
     //Local Storage Config
     localStorageServiceProvider
-    .setPrefix('GiftShop');
+    .setPrefix('GiftShop')
+    .setStorageType('sessionStorage')
+    .setNotify(true, true)
 })

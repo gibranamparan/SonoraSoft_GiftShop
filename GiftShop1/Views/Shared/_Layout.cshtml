@@ -21,13 +21,14 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <i class="fa fa-key"></i><a href="#!/login">Login</a>
+                    <li ng-controller="LoginInfoCtrl">
+                        <a href="#!/login" ng-if="!authData">Login</a>
+                        <a ng-click="logOut()" ng-if="authData" style="cursor:pointer">LogOut</a>
                     </li>
-                    @*
-    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
-                    *@
+                                        @*
+        <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
+        <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+                                        *@
                 </ul>
             </div>
         </div>
