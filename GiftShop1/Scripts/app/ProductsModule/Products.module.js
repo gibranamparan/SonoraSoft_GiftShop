@@ -1,10 +1,12 @@
 angular.module('products', [])
 .component("productsList", {
     templateUrl: "Scripts/app/ProductsModule/ProductsList.template.html",
-    controller: function ($scope, $http, $uibModal, localStorageService) {
+    controller: function ($scope,$rootScope, $http, $uibModal, localStorageService) {
         $scope.selectedProducts = []
+        $scope.safeProducts = []
+        $scope.products = []
+
         //Recovering state of selected products by the user
-        //if($window.sessionStorage.selectedProducts){
         if(localStorageService.get('selectedProducts')){
             //$scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
             $scope.selectedProducts = localStorageService.get('selectedProducts')
@@ -15,42 +17,48 @@ angular.module('products', [])
         },0)
 
         //Open Modal To see product details
-        $scope.openModalProductDetails = function(prodID){
+        $scope.openModalProductDetails = (prodID)=>{
             //Selected product ID is received and passed to modal
-            var modalInstance = $uibModal.open({
+            $scope.modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'modalsProductDetails.html',
                 controller:'ModalProductDetailsCtrl',
                 controllerAs: '$ctrl',
                 size: 'lg',
-                resolve: {
-                    prodID: function(){
-                        return prodID
-                    }
-                }
+                resolve: { prodID: function(){ return prodID } }
               });
-              modalInstance.result.then(
+              $scope.modalInstance.result.then(
                 res=>{ //Clicked "Add to Cart" button in modal
-                    if($scope.selectedProducts){
-                        prodFound = $scope.selectedProducts.find(item=>item.prodID == res.prodID)
-                        if(prodFound){
-                            prodFound.qty = res.qty //Update qty for selected product
-                        }else{
-                            $scope.selectedProducts.push(res) //Add new selected product
-                        }
-                        $scope.totalQty = $scope.selectedProducts.map(item=>{return item.qty}).reduce((itemA,itemB)=>{ 
-                            return itemA + itemB
-                        },0)
-                    }
-                    
-                    console.log($scope.selectedProducts)
-                    //$window.sessionStorage.selectedProducts = JSON.stringify($scope.selectedProducts)
-                    localStorageService.set('selectedProducts',$scope.selectedProducts)
+                    //CODIGO DEL EVENTO DE UDOATE DE PRODUCTOS SELECCIONADOS
                 },
                 res=>{ //Clicked out of the modal
                     console.log("Modal closed")
-                },
-        )}
+                }
+            )
+        }
+        
+        $scope.clearSelectedProducts = function(){
+            $scope.selectedProducts = [];
+            $scope.totalQty = 0
+            localStorageService.remove('selectedProducts')
+        }
+
+        //Evento to update seletected products
+        $scope.$on('updateSelectedProducts',(event, res)=>{
+            debugger
+            var prodFound = $scope.selectedProducts.find(item=>item.prodID == res.prodID)
+
+            if(prodFound)
+                prodFound.qty = res.qty //Update qty for selected product
+            else
+                $scope.selectedProducts.push(res) //Add new selected product
+            
+            $scope.totalQty = $scope.selectedProducts.map(item=>{return item.qty}).reduce((itemA,itemB)=>{ 
+                return itemA + itemB
+            },0)
+            
+            localStorageService.set('selectedProducts',$scope.selectedProducts)
+        })
         
         //Getting the list of all products
         $http.get('/api/products').then((res) => { //Success
@@ -74,7 +82,7 @@ angular.module('products', [])
         $scope.product = {}
         console.log("Entro product details con ID",$ctrl.prodID)
 
-        //Getting the list of all products
+        //Getting product details 
         $http.get(`/api/products/${$ctrl.prodID}`).then((res) => { //Success
             console.log("Detalles de producto recibido",res)
             $scope.product = res.data
@@ -89,7 +97,6 @@ angular.module('products', [])
         $scope.TotalAmount = 0
         //Recovering state of selected products by the user
         if(localStorageService.get('selectedProducts')){
-            //$scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
             $scope.selectedProducts = localStorageService.get('selectedProducts')
             console.log($scope.selectedProducts)
         }
@@ -112,18 +119,19 @@ angular.module('products', [])
             $scope.TotalAmount = $scope.selectedProducts.map(item=>{return item.totalAmount}).reduce((itemA,itemB)=>{ 
                 return itemA + itemB
             },0)
-            console.log($scope.selectedProducts)
         },//Error
         (res, stats, conf, txt) => { console.log(res) })
     }
 })
 //Modal product details controller
-.controller("ModalProductDetailsCtrl",function ($uibModalInstance,prodID) {
+.controller("ModalProductDetailsCtrl",function ($uibModalInstance,$rootScope,prodID) {
     $ctrl = this
     $ctrl.prodID = prodID
     $ctrl.qty = 0
 
     $ctrl.ok = function () {
+        //Calls products list to update the counter of products
+        $rootScope.$broadcast("updateSelectedProducts",{prodID : prodID, qty:$ctrl.qty})
         $uibModalInstance.close({prodID : prodID, qty:$ctrl.qty});
     };
 
