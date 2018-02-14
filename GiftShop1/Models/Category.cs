@@ -14,5 +14,17 @@ namespace GiftShop1.Models
         public string name { get; set; }
 
         public virtual ICollection<Product> products { get; set; }
+
+        public class VMCategory
+        {
+            public int categoryID { get; set; }
+            public string name { get; set; }
+
+            public VMCategory(Category c)
+            {
+                categoryID = c.categoryID;
+                name = c.name;
+            }
+        }
     }
 }

@@ -23,13 +23,11 @@ namespace GiftShop1.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data. E.g.
             //
-            context.Categories.AddOrUpdate(
-              new Category { name = "Collares" },
-              new Category { name = "Pulseras" },
-              new Category { name = "Libros y Revistas" },
-              new Category { name = "Posters" },
-              new Category { name = "Figuras" }
-            );
+
+            //Create initial categories as seeds for testing
+            string[] categories = new string[] { "Collares", "Pulseras", "Libros y Revistas", "Posters", "Figuras" };
+            foreach(var cat in categories)
+                context.Categories.AddOrUpdate( c => c.name,new Category { name =  cat } );
 
             //Se crean los roles que se manejaran en el sistema inicialmente
             string[] roles = ApplicationUser.RoleNames.ROLES_ARRAY;

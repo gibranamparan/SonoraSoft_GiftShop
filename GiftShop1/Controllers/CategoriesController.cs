@@ -12,48 +12,46 @@ using GiftShop1.Models;
 
 namespace GiftShop1.Controllers
 {
-    public class ProductsController : ApiController
+    public class CategoriesController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/Products
-        //public IEnumerable<Product.VMProduct> GetProducts()
-        public IEnumerable<Product.VMProduct> GetProducts()
+        // GET: api/Categories
+        public IEnumerable<Category.VMCategory> GetCategories()
         {
-            var products = from prod in db.Products.ToList()
-                            select new Product.VMProduct(prod);
-            return products;
+            var res = from cat in db.Categories.ToList()
+                      select new Category.VMCategory(cat);
+            return res;
         }
 
-        // GET: api/Products/5
-        [ResponseType(typeof(Product))]
-        public IHttpActionResult GetProduct(int id)
+        // GET: api/Categories/5
+        [ResponseType(typeof(Category))]
+        public IHttpActionResult GetCategory(int id)
         {
-            Product product = db.Products.Find(id);
-            if (product == null)
+            Category category = db.Categories.Find(id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return Ok(new Product.VMProduct(product));
+            return Ok(category);
         }
 
-        // PUT: api/Products/5
+        // PUT: api/Categories/5
         [ResponseType(typeof(void))]
-        [Authorize]
-        public IHttpActionResult PutProduct(int id, Product product)
+        public IHttpActionResult PutCategory(int id, Category category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != product.productID)
+            if (id != category.categoryID)
             {
                 return BadRequest();
             }
 
-            db.Entry(product).State = EntityState.Modified;
+            db.Entry(category).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +59,7 @@ namespace GiftShop1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!CategoryExists(id))
                 {
                     return NotFound();
                 }
@@ -74,37 +72,35 @@ namespace GiftShop1.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Products
-        [ResponseType(typeof(Product))]
-        [Authorize]
-        public IHttpActionResult PostProduct(Product product)
+        // POST: api/Categories
+        [ResponseType(typeof(Category))]
+        public IHttpActionResult PostCategory(Category category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Products.Add(product);
+            db.Categories.Add(category);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = product.productID }, new Product.VMProduct(product));
+            return CreatedAtRoute("DefaultApi", new { id = category.categoryID }, category);
         }
 
-        // DELETE: api/Products/5
-        [ResponseType(typeof(Product))]
-        [Authorize]
-        public IHttpActionResult DeleteProduct(int id)
+        // DELETE: api/Categories/5
+        [ResponseType(typeof(Category))]
+        public IHttpActionResult DeleteCategory(int id)
         {
-            Product product = db.Products.Find(id);
-            if (product == null)
+            Category category = db.Categories.Find(id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            db.Products.Remove(product);
+            db.Categories.Remove(category);
             db.SaveChanges();
 
-            return Ok(product);
+            return Ok(category);
         }
 
         protected override void Dispose(bool disposing)
@@ -116,9 +112,9 @@ namespace GiftShop1.Controllers
             base.Dispose(disposing);
         }
 
-        private bool ProductExists(int id)
+        private bool CategoryExists(int id)
         {
-            return db.Products.Count(e => e.productID == id) > 0;
+            return db.Categories.Count(e => e.categoryID == id) > 0;
         }
     }
 }

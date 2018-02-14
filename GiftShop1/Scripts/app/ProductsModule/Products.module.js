@@ -1,11 +1,15 @@
 angular.module('products', [])
+//Main Products List screen component
 .component("productsList", {
     templateUrl: "Scripts/app/ProductsModule/ProductsList.template.html",
     controller: function ($scope,$rootScope, $http, $uibModal, localStorageService) {
         $scope.selectedProducts = []
         $scope.safeProducts = []
         $scope.products = []
-
+        $scope.categories = []
+        $scope.newProd = {}
+        $scope.authData = localStorageService.get('authorizationData')
+        
         //Recovering state of selected products by the user
         if(localStorageService.get('selectedProducts')){
             //$scope.selectedProducts = JSON.parse($window.sessionStorage.selectedProducts)
@@ -36,6 +40,26 @@ angular.module('products', [])
                 }
             )
         }
+
+        $scope.removeProductDialog = (prod)=>{
+            //Selected product ID is received and passed to modal
+            $scope.modalInstanceRemove = $uibModal.open({
+                animation: true,
+                templateUrl: 'modalsProductRemove.html',
+                controller:'ModalsProductRemoveCtrl',
+                controllerAs: '$ctrl',
+                size: 'lg',
+                resolve: { prod: function(){ return prod } }
+              });
+              $scope.modalInstanceRemove.result.then(
+                res=>{ //Clicked "Add to Cart" button in modal
+                    //CODIGO DEL EVENTO DE UDOATE DE PRODUCTOS SELECCIONADOS
+                },
+                res=>{ //Clicked out of the modal
+                    console.log("Modal closed")
+                }
+            )
+        }
         
         $scope.clearSelectedProducts = function(){
             $scope.selectedProducts = [];
@@ -45,7 +69,6 @@ angular.module('products', [])
 
         //Evento to update seletected products
         $scope.$on('updateSelectedProducts',(event, res)=>{
-            debugger
             var prodFound = $scope.selectedProducts.find(item=>item.prodID == res.prodID)
 
             if(prodFound)
@@ -59,6 +82,18 @@ angular.module('products', [])
             
             localStorageService.set('selectedProducts',$scope.selectedProducts)
         })
+        //Evento to update seletected products
+        $scope.$on('removeProduct',(event, res)=>{
+            res = res.prod
+            
+            $http.delete(`/api/products/${res.productID}`,
+                {headers: {'Authorization':'Bearer '+$scope.authData.token }}).then((res) => { //Success
+                res = res.data
+                console.log("Detalles de producto recibido",res)
+                $scope.products = $scope.products.filter(item=>item.productID != res.productID)
+            },//Error
+            (res, stats, conf, txt) => { console.log(res) })
+        })
         
         //Getting the list of all products
         $http.get('/api/products').then((res) => { //Success
@@ -68,7 +103,25 @@ angular.module('products', [])
             });
             $scope.products = products
         },//Error
+
         (res, stats, conf, txt) => { console.log(res) })
+        //Getting the categories
+        $http.get('/api/categories').then((res) => { //Success
+            $scope.categories = res.data
+        },//Error
+        (res, stats, conf, txt) => { console.log(res) })
+
+        $scope.registerNewProduct = function(){
+            //Creating a new product
+            $http.post('/api/products',$scope.newProd,
+                {headers: {'Authorization':'Bearer '+$scope.authData.token }})
+            .then((res) => { //Success
+                var newProduct = res.data
+                $scope.products.push(newProduct)
+                $scope.newProd = {}
+            },//Error
+            (res, stats, conf, txt) => { console.log(res) })
+        }
     }
 })
 .component("productDetails", {
@@ -139,3 +192,19 @@ angular.module('products', [])
         $uibModalInstance.dismiss('cancel');
     };
 })
+//Modal product details controller
+.controller("ModalsProductRemoveCtrl",function ($uibModalInstance,$rootScope,prod) {
+    $ctrl = this
+    $ctrl.prod = prod
+
+    $ctrl.ok = function () {
+        //Calls products list to update the counter of products
+        $rootScope.$broadcast("removeProduct",{prod : prod})
+        $uibModalInstance.close();
+    };
+
+    $ctrl.cancel = function () {
+        //$uibModalInstance.dismiss('cancel');
+    };
+})
+
