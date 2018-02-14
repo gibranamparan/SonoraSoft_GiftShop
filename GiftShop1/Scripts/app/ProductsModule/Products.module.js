@@ -69,6 +69,7 @@ angular.module('products', [])
 
         //Evento to update seletected products
         $scope.$on('updateSelectedProducts',(event, res)=>{
+            debugger
             var prodFound = $scope.selectedProducts.find(item=>item.prodID == res.prodID)
 
             if(prodFound)
@@ -198,7 +199,7 @@ angular.module('products', [])
     $ctrl.prod = prod
 
     $ctrl.ok = function () {
-        //Calls products list to update the counter of products
+        //Calls products list to update the counter of selected products
         $rootScope.$broadcast("removeProduct",{prod : prod})
         $uibModalInstance.close();
     };
