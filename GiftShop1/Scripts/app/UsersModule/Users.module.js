@@ -2,7 +2,7 @@ angular.module('users', [])
 //Login screen controller
 .component("userLogin", {
     templateUrl: "Scripts/app/UsersModule/UsersLogin.template.html",
-    controller: function ($scope, $rootScope, $location, authService) {        
+    controller: function ($scope, $rootScope, $location, authService, localStorageService) {        
         $scope.loginData = { userName: "", password: "" };
         $scope.message = "";
 

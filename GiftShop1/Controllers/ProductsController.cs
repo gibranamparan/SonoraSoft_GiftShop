@@ -77,6 +77,7 @@ namespace GiftShop1.Controllers
         // POST: api/Products
         [ResponseType(typeof(Product))]
         [Authorize]
+        [Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
         public IHttpActionResult PostProduct(Product product)
         {
             if (!ModelState.IsValid)
@@ -92,7 +93,7 @@ namespace GiftShop1.Controllers
 
         // DELETE: api/Products/5
         [ResponseType(typeof(Product))]
-        [Authorize]
+        [Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
         public IHttpActionResult DeleteProduct(int id)
         {
             Product product = db.Products.Find(id);

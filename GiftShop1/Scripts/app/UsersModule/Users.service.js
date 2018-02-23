@@ -27,7 +27,7 @@ app.factory('authService', ['$http', '$q', 'localStorageService', function ($htt
         $http.post(serviceBase + 'token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
         .then(function (response) {
             response = response.data
-            localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.userName });
+            localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, roleName: response.roleName });
 
             _authentication.isAuth = true;
             _authentication.userName = loginData.userName;

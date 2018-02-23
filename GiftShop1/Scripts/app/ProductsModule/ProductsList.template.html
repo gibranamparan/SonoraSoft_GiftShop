@@ -2,17 +2,17 @@
     <h1>
         Our Gifts
     </h1>
-    <div class="row" ng-if="!authData">
+    <div class="row" ng-if="authData.roleName == 'Buyer'">
         <a href="#!/cart" style="font-size: 2.5em" class="pull-right">
             <i class="fa fa-shopping-cart"></i>
             <span id="totalQty">{{totalQty}}</span>
         </a>
     </div>
-    <div class="row" ng-if="!authData">
+    <div class="row" ng-if="authData.roleName == 'Buyer'">
         <button class="btn btn-default pull-right" ng-click="clearSelectedProducts()">Clear</button>
     </div>
     
-    <div class="panel panel-primary" ng-if="authData">
+    <div class="panel panel-primary" ng-if="authData.roleName == 'Admin'">
           <div class="panel-heading">
                 <h3 class="panel-title">New Product</h3>
           </div>
@@ -67,10 +67,10 @@
                 <td>{{prod.name}}</td>
                 <td>${{prod.price | number:2}}</td>
                 <td class="actions">
-                        <a href="#" ng-if="!authData">
+                        <a href="#" ng-if="authData.roleName == 'Buyer'">
                             <i class="fa fa-cart-plus" ng-click="openModalProductDetails(prod.productID)"></i>
                         </a>
-                        <a href="#" ng-if="authData">
+                        <a href="#" ng-if="authData.roleName == 'Admin'">
                             <i class="fa fa-remove" ng-click="removeProductDialog(prod)"></i>
                         </a>
                 </td>

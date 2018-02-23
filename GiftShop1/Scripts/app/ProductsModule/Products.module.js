@@ -9,6 +9,7 @@ angular.module('products', [])
         $scope.categories = []
         $scope.newProd = {}
         $scope.authData = localStorageService.get('authorizationData')
+
         
         //Recovering state of selected products by the user
         if(localStorageService.get('selectedProducts')){
@@ -33,7 +34,7 @@ angular.module('products', [])
               });
               $scope.modalInstance.result.then(
                 res=>{ //Clicked "Add to Cart" button in modal
-                    //CODIGO DEL EVENTO DE UDOATE DE PRODUCTOS SELECCIONADOS
+                    //CODIGO DEL EVENTO DE UDPATE DE PRODUCTOS SELECCIONADOS
                 },
                 res=>{ //Clicked out of the modal
                     console.log("Modal closed")

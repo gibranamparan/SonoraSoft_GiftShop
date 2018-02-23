@@ -32,6 +32,7 @@ namespace GiftShop1.Providers
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+            string roleName = userManager.GetRoles(user.Id).FirstOrDefault();
 
             if (user == null)
             {
@@ -44,7 +45,7 @@ namespace GiftShop1.Providers
             ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
                 CookieAuthenticationDefaults.AuthenticationType);
 
-            AuthenticationProperties properties = CreateProperties(user.UserName);
+            AuthenticationProperties properties = CreateProperties(user.UserName, roleName);
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
             context.Validated(ticket);
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
@@ -86,12 +87,23 @@ namespace GiftShop1.Providers
             return Task.FromResult<object>(null);
         }
 
+        public static AuthenticationProperties CreateProperties(string userName, string roleName)
+        {
+            IDictionary<string, string> data = new Dictionary<string, string>
+            {
+                { "userName", userName },
+                { "roleName", roleName },
+            };
+            return new AuthenticationProperties(data);
+        }
+
         public static AuthenticationProperties CreateProperties(string userName)
         {
             IDictionary<string, string> data = new Dictionary<string, string>
             {
-                { "userName", userName }
+                { "userName", userName },
             };
+
             return new AuthenticationProperties(data);
         }
     }
