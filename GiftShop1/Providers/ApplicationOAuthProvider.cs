@@ -32,7 +32,7 @@ namespace GiftShop1.Providers
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
-            string roleName = userManager.GetRoles(user.Id).FirstOrDefault();
+            string roleName = user == null ? string.Empty : userManager.GetRoles(user.Id).FirstOrDefault();
 
             if (user == null)
             {

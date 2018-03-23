@@ -10,6 +10,7 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using GiftShop1.Providers;
 using GiftShop1.Models;
+using System.Web.Http.Cors;
 
 namespace GiftShop1
 {
@@ -30,6 +31,7 @@ namespace GiftShop1
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider
             app.UseCookieAuthentication(new CookieAuthenticationOptions());
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
             // Configure the application for OAuth based flow
             PublicClientId = "self";
@@ -40,7 +42,7 @@ namespace GiftShop1
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
                 // In production mode set AllowInsecureHttp = false
-                AllowInsecureHttp = true
+                AllowInsecureHttp = true,
             };
 
             // Enable the application to use bearer tokens to authenticate users
