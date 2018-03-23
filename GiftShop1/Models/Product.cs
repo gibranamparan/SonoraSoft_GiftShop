@@ -33,7 +33,8 @@ namespace GiftShop1.Models
 
             public string name { get; set; }
             public decimal price { get; set; }
-            public string category { get; set; }
+            public string categoryName { get; set; }
+            public int categoryID { get; set; }
             public string description { get; set; }
 
             public VMProduct(Product p)
@@ -41,7 +42,8 @@ namespace GiftShop1.Models
                 this.productID = p.productID;
                 this.name = p.name;
                 this.price = p.price;
-                this.category = p.category == null ? string.Empty : p.category.name;
+                this.categoryName = p.category == null ? string.Empty : p.category.name;
+                this.categoryID = p.categoryID.HasValue ? p.categoryID.Value : 0;
                 this.description = p.description;
             }
         }

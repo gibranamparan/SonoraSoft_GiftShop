@@ -39,7 +39,7 @@ namespace GiftShop1.Controllers
         }
 
         // PUT: api/Products/5
-        [ResponseType(typeof(void))]
+        /*[ResponseType(typeof(void))]
         [Authorize]
         public IHttpActionResult PutProduct(int id, Product product)
         {
@@ -72,12 +72,41 @@ namespace GiftShop1.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
+        }*/
+
+        // PUT: api/Products/5
+        [ResponseType(typeof(void))]
+        //[Authorize]
+        public IHttpActionResult PutProduct(Product product)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            db.Entry(product).State = EntityState.Modified;
+
+            try
+            {
+                int count = db.SaveChanges();
+                return Ok(new { count, product });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(product.productID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return StatusCode(HttpStatusCode.NoContent);
+                    throw;
+                }
+            }
+
         }
 
         // POST: api/Products
         [ResponseType(typeof(Product))]
-        [Authorize]
-        [Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
+        //[Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
         public IHttpActionResult PostProduct(Product product)
         {
             if (!ModelState.IsValid)
@@ -88,12 +117,13 @@ namespace GiftShop1.Controllers
             db.Products.Add(product);
             db.SaveChanges();
 
+            db.Entry(product).Reference(prod => prod.category).Load();
             return CreatedAtRoute("DefaultApi", new { id = product.productID }, new Product.VMProduct(product));
         }
 
         // DELETE: api/Products/5
         [ResponseType(typeof(Product))]
-        [Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
+        //[Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
         public IHttpActionResult DeleteProduct(int id)
         {
             Product product = db.Products.Find(id);
@@ -103,9 +133,9 @@ namespace GiftShop1.Controllers
             }
 
             db.Products.Remove(product);
-            db.SaveChanges();
+            int count = db.SaveChanges();
 
-            return Ok(product);
+            return Ok(new { count , product });
         }
 
         protected override void Dispose(bool disposing)
