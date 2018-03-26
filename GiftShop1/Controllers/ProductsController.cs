@@ -76,7 +76,7 @@ namespace GiftShop1.Controllers
 
         // PUT: api/Products/5
         [ResponseType(typeof(void))]
-        //[Authorize]
+        [Authorize(Roles =  ApplicationUser.RoleNames.ADMIN)]
         public IHttpActionResult PutProduct(Product product)
         {
             if (!ModelState.IsValid)

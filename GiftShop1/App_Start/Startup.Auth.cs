@@ -34,7 +34,8 @@ namespace GiftShop1
             app.UseCookieAuthentication(new CookieAuthenticationOptions());
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
-            //Enable globa CORS Permissions
+            //Enable global CORS Permissions
+            //Info: http://bitoftech.net/2014/06/01/token-based-authentication-asp-net-web-api-2-owin-asp-net-identity/
             var corsPolicy = new System.Web.Cors.CorsPolicy() { AllowAnyHeader = true, AllowAnyMethod = true, AllowAnyOrigin = false, };
             string clientURL = ConfigurationManager.AppSettings["clientURL"];
             corsPolicy.Origins.Add(clientURL);
