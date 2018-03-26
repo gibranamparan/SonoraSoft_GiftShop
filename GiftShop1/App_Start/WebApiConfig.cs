@@ -23,9 +23,9 @@ namespace GiftShop1
             config.MapHttpAttributeRoutes();
 
             //Enabling requests from AngularAPP, hosted in URL configured in web.config document
-            string clientURL = ConfigurationManager.AppSettings["clientURL"];
+            /*string clientURL = ConfigurationManager.AppSettings["clientURL"];
             var cors = new EnableCorsAttribute(clientURL, "*", "*");
-            config.EnableCors(cors);
+            config.EnableCors(cors);*/
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

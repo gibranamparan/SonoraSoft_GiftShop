@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
+using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.OAuth;
@@ -11,6 +12,7 @@ using Owin;
 using GiftShop1.Providers;
 using GiftShop1.Models;
 using System.Web.Http.Cors;
+using System.Configuration;
 
 namespace GiftShop1
 {
@@ -31,7 +33,12 @@ namespace GiftShop1
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider
             app.UseCookieAuthentication(new CookieAuthenticationOptions());
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
-            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+
+            //Enable globa CORS Permissions
+            var corsPolicy = new System.Web.Cors.CorsPolicy() { AllowAnyHeader = true, AllowAnyMethod = true, AllowAnyOrigin = false, };
+            string clientURL = ConfigurationManager.AppSettings["clientURL"];
+            corsPolicy.Origins.Add(clientURL);
+            app.UseCors(CorsOptions.AllowAll);
 
             // Configure the application for OAuth based flow
             PublicClientId = "self";
