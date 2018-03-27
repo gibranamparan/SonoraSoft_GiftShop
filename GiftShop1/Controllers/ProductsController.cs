@@ -39,42 +39,6 @@ namespace GiftShop1.Controllers
         }
 
         // PUT: api/Products/5
-        /*[ResponseType(typeof(void))]
-        [Authorize]
-        public IHttpActionResult PutProduct(int id, Product product)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != product.productID)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(product).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }*/
-
-        // PUT: api/Products/5
         [ResponseType(typeof(void))]
         [Authorize(Roles =  ApplicationUser.RoleNames.ADMIN)]
         public IHttpActionResult PutProduct(Product product)
@@ -106,7 +70,7 @@ namespace GiftShop1.Controllers
 
         // POST: api/Products
         [ResponseType(typeof(Product))]
-        //[Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
+        [Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
         public IHttpActionResult PostProduct(Product product)
         {
             if (!ModelState.IsValid)

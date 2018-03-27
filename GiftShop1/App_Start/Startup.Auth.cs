@@ -13,6 +13,7 @@ using GiftShop1.Providers;
 using GiftShop1.Models;
 using System.Web.Http.Cors;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace GiftShop1
 {
@@ -39,7 +40,14 @@ namespace GiftShop1
             var corsPolicy = new System.Web.Cors.CorsPolicy() { AllowAnyHeader = true, AllowAnyMethod = true, AllowAnyOrigin = false, };
             string clientURL = ConfigurationManager.AppSettings["clientURL"];
             corsPolicy.Origins.Add(clientURL);
-            app.UseCors(CorsOptions.AllowAll);
+            //app.UseCors(CorsOptions.AllowAll);
+            app.UseCors(new CorsOptions
+            {
+                PolicyProvider = new CorsPolicyProvider
+                {
+                    PolicyResolver = context => Task.FromResult(corsPolicy)
+                }
+            });
 
             // Configure the application for OAuth based flow
             PublicClientId = "self";

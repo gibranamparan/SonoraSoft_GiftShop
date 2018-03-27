@@ -20,5 +20,34 @@ namespace GiftShop1.Models
         public virtual Buyer buyer { get; set; }
 
         public virtual ICollection<ProductInCart> products { get; set; }
+
+        public decimal totalAmount { get
+            {
+                decimal res = 0;
+                if (this.products != null && this.products.Count()>0)
+                {
+                    res = this.products.Sum(p => p.product == null ? 0 : p.product.price);
+                }
+
+                return res;
+            }
+        } 
+
+        public class VMPurchaseCart
+        {
+            public int purchaseID { get; set; }
+            public DateTime createdAt { get; set; }
+            public decimal totalAmount { get; set; }
+
+            public Buyer.VMBuyer buyer { get; set; }
+
+            public VMPurchaseCart(PurchaseCart cart)
+            {
+                this.purchaseID = cart.purchaseID;
+                this.createdAt = cart.createdAt;
+                this.buyer = new Buyer.VMBuyer(cart.buyer);
+                this.totalAmount = cart.totalAmount;
+            }
+        }
     }
 }

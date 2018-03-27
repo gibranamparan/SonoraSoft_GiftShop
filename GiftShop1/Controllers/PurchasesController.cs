@@ -8,6 +8,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using GiftShop1.Models;
 
 namespace GiftShop1.Controllers
@@ -17,13 +19,26 @@ namespace GiftShop1.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Purchases
-        public IQueryable<PurchaseCart> GetPurchases()
+        [Authorize(Roles = ApplicationUser.RoleNames.ADMIN+","+ApplicationUser.RoleNames.BUYER)]
+        //public IQueryable<PurchaseCart> GetPurchases()
+        public IEnumerable<PurchaseCart.VMPurchaseCart> GetPurchases()
         {
-            return db.Purchases;
+            string userID = User.IsInRole(ApplicationUser.RoleNames.ADMIN) ? null : User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userID))
+            {
+                var res = db.Purchases.ToList().Select(pur => new PurchaseCart.VMPurchaseCart(pur));
+                return res;
+            }
+            else
+            {
+                var res = db.Purchases.ToList().Where(pur => pur.buyerID == userID).Select(pur => new PurchaseCart.VMPurchaseCart(pur));
+                return res;
+            }
         }
 
         // GET: api/Purchases/5
         [ResponseType(typeof(PurchaseCart))]
+        [Authorize]
         public IHttpActionResult GetPurchases(int id)
         {
             PurchaseCart purchases = db.Purchases.Find(id);
@@ -72,20 +87,28 @@ namespace GiftShop1.Controllers
 
         // POST: api/Purchases
         [ResponseType(typeof(PurchaseCart))]
+        [Authorize]
         public IHttpActionResult PostPurchases(PurchaseCart purchase)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            
-            purchase.createdAt = DateTime.Now;
-            db.Purchases.Add(purchase);
-            db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = purchase.purchaseID }, purchase);
+            purchase.createdAt = DateTime.Now;
+            purchase.boughtAt = DateTime.Now;
+            purchase.buyerID = string.IsNullOrEmpty(purchase.buyerID) ? User.Identity.GetUserId() : purchase.buyerID;
+
+            var orders = purchase.products.ToList();
+            orders.ForEach(orderProduct => orderProduct.product = null);
+            purchase.products = orders;
+            db.Purchases.Add(purchase);
+            int count = db.SaveChanges();
+
+            return CreatedAtRoute("DefaultApi", new { id = purchase.purchaseID, count }, purchase);
         }
 
         // DELETE: api/Purchases/5
         [ResponseType(typeof(PurchaseCart))]
+        [Authorize(Roles = ApplicationUser.RoleNames.ADMIN)]
         public IHttpActionResult DeletePurchases(int id)
         {
             PurchaseCart purchases = db.Purchases.Find(id);

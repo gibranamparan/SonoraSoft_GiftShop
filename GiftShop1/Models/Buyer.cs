@@ -18,7 +18,13 @@ namespace GiftShop1.Models
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="email"></param>
-        public Buyer(string userName, string email):base(userName,email) {
+        public Buyer(string userName, string email) : base(userName, email) {
+        }
+
+        public class VMBuyer:ApplicationUser.VMUser
+        {
+            public VMBuyer() { }
+            public VMBuyer(Buyer buyer):base(buyer) { }
         }
     }
 }
