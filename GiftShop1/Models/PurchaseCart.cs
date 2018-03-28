@@ -40,6 +40,7 @@ namespace GiftShop1.Models
             public decimal totalAmount { get; set; }
 
             public Buyer.VMBuyer buyer { get; set; }
+            public List<ProductInCart.VMProductInCart> products { get; set; }
 
             public VMPurchaseCart(PurchaseCart cart)
             {
@@ -47,6 +48,12 @@ namespace GiftShop1.Models
                 this.createdAt = cart.createdAt;
                 this.buyer = new Buyer.VMBuyer(cart.buyer);
                 this.totalAmount = cart.totalAmount;
+
+                this.products = new List<ProductInCart.VMProductInCart>();
+                if(cart.products != null && cart.products.Count() > 0)
+                {
+                    this.products = cart.products.ToList().Select(p => new ProductInCart.VMProductInCart(p)).ToList();
+                }
             }
         }
     }

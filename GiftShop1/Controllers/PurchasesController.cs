@@ -37,8 +37,8 @@ namespace GiftShop1.Controllers
         }
 
         // GET: api/Purchases/5
-        [ResponseType(typeof(PurchaseCart))]
         [Authorize]
+        [ResponseType(typeof(PurchaseCart.VMPurchaseCart))]
         public IHttpActionResult GetPurchases(int id)
         {
             PurchaseCart purchases = db.Purchases.Find(id);
@@ -47,7 +47,9 @@ namespace GiftShop1.Controllers
                 return NotFound();
             }
 
-            return Ok(purchases);
+            PurchaseCart.VMPurchaseCart vmPurchase = new PurchaseCart.VMPurchaseCart(purchases);
+
+            return Ok(vmPurchase);
         }
 
         // PUT: api/Purchases/5
